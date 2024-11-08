@@ -60,20 +60,21 @@ router.post('/createemployee', authenticateJwt, upload.single('imagePath'), asyn
     const imagePath = req.file
         ? `/assets/images/${req.file.filename}`
         : null; 
+    const course = Array.isArray(req.body.course) ? req.body.course : JSON.parse(req.body.course);
     const newEmployee = new Employee({
       name: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
       designation: req.body.designation,
       gender: req.body.gender,
-      course: req.body.course,
+      course: course,
       imagePath: imagePath
     })
-    const saveEmployee = await Employee(newEmployee);
-    await saveEmployee.save();
+    await newEmployee.save();
     res.status(201).json({ message: "Employee added successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error while save employee", error });
+    console.log('Error in employee creation:',error)
+    res.status(500).json({ message: "Error while save employee", error: error.message  });
   }
 })
 

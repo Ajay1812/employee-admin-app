@@ -7,9 +7,9 @@ const adminSchema = new mongoose.Schema({
 });
 
 const employeeSchema = new mongoose.Schema({
-  name: {type: String, required: true, lowercase: true, trim: true},
-  email: {type:String, required:true, unique: true,lowercase: true, trim: true },
-  mobile: {type:Number,  required: true, unique:true},
+  name: { type: String, required: true, lowercase: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  mobile: { type: Number, required: true, unique: true },
   designation: {
     type: String,
     enum: ["HR", "Manager", "Sales"],
@@ -18,16 +18,17 @@ const employeeSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ["M", "F"],
+    enum: ["Male", "Female"],
     required: true
   },
   course: {
-    type: String,
-    enum: ["MCA", "BCA", "BSC"]
+    type: [String],  // Changed to an array of strings
+    enum: ["MCA", "BCA", "BSC"],
   },
   imagePath: { type: String },
   createdAt: { type: Date, default: Date.now },
-})
+});
+
 
 const Admin = mongoose.model("Admin", adminSchema)
 const Employee = mongoose.model("Employee", employeeSchema)
