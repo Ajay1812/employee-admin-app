@@ -61,15 +61,27 @@ router.post('/createemployee', authenticateJwt, upload.single('imagePath'), asyn
         ? `/assets/images/${req.file.filename}`
         : null; 
     const course = Array.isArray(req.body.course) ? req.body.course : JSON.parse(req.body.course);
-    const newEmployee = new Employee({
+
+    let maxEmpId = await Employee.aggregate([{
+      $group:
+      {
+        _id: "$item",
+        maxEmpId: { $max: "$empId"}
+      }
+    }])
+    // console.log(typeof(maxEmpId), maxEmpId)
+
+    let newEmployee = new Employee({
       name: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
       designation: req.body.designation,
       gender: req.body.gender,
       course: course,
-      imagePath: imagePath
+      imagePath: imagePath,
+      empId: (maxEmpId.length === 0) ? 1 :  maxEmpId[0]['maxEmpId'] + 1
     })
+    // console.log(newEmployee)
     await newEmployee.save();
     res.status(201).json({ message: "Employee added successfully" });
   } catch (error) {
@@ -87,14 +99,24 @@ router.get("/employeelist", authenticateJwt, async (req, res) => {
   }
 });
 
+router.get("/employeelist/:id", authenticateJwt, async (req, res) => {
+  const employee = await Employee.findById(req.params.id);
+  if (employee) {
+    res.status(201).json({ employee });
+  } else {
+    res.status(403).json({ message: "employee not found" });
+  }
+});
+
 router.delete('/delete-employee/:id', authenticateJwt, async (req, res)=>{
   const { id } = req.params
   try {
     const deleteEmployee = await Employee.findByIdAndDelete(id)
+
     if (!deleteEmployee){
       return res.status(404).json({message: "Employee not found."})
     }
-    res.status(200).json({ message: 'Employee deleted successfully' });
+    res.status(200).json({ message: 'Employee deleted successfully'});
   } catch (error) {
     res.status(500).json({ message: 'Error deleting employee', error });
   }

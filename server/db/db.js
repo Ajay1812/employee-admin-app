@@ -7,6 +7,7 @@ const adminSchema = new mongoose.Schema({
 });
 
 const employeeSchema = new mongoose.Schema({
+  empId: {type: Number, required: true, unique: true},
   name: { type: String, required: true, lowercase: true, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   mobile: { type: Number, required: true, unique: true },
@@ -24,8 +25,11 @@ const employeeSchema = new mongoose.Schema({
   course: {
     type: [String],  // Changed to an array of strings
     enum: ["MCA", "BCA", "BSC"],
+    required: true,
+    min: 1  
   },
   imagePath: { type: String },
+  isActive: {type: Boolean, required: true, default: true},
   createdAt: { type: Date, default: Date.now },
 });
 

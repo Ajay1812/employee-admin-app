@@ -7,6 +7,16 @@ import {
   Button,
   TextField,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel,
+  FormGroup,
+  Checkbox
 } from "@mui/material";
 import axios from "axios";
 import { BASE_URL } from "../config.js";
@@ -17,15 +27,40 @@ function EditEmployeeDialog({ open, onClose, employeeId, refreshEmployees }) {
   const [employeeData, setEmployeeData] = useState({
     name: "",
     email: "",
-    phone: "",
+    mobile: "",
     designation: "",
     gender: "",
-    course: "",
+    course: [],
     imagePath: "",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [isActive, setIsActive] = useState(true);
+
+  const handleImageUpload = (e) => {
+    setEmployeeData(prevData => ({
+      ...prevData,
+      imagePath: e.target.files[0] // Save file reference for later upload
+    }));
+  };
+
+  const handleCourseChange = (event) => {
+    const value = event.target.value;
+    setEmployeeData((prevData) => ({
+      ...prevData,
+      course: prevData.course.includes(value)
+        ? prevData.course.filter((item) => item !== value)
+        : [...prevData.course, value]
+    }));
+  };
+  const handleStatusChange = (e) => {
+    if (e.target.value === "Active") {
+      setIsActive(true)
+    } else {
+      setIsActive(false)
+    }
+  }
 
   useEffect(() => {
     if (open && employeeId) {
@@ -33,7 +68,7 @@ function EditEmployeeDialog({ open, onClose, employeeId, refreshEmployees }) {
         setLoading(true);
         setError(null);
         try {
-          const response = await axios.get(`${BASE_URL}/admin/employees/${employeeId}`, {
+          const response = await axios.get(`${BASE_URL}/admin/employeelist/${employeeId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           });
           setEmployeeData(response.data.employee);
@@ -58,12 +93,28 @@ function EditEmployeeDialog({ open, onClose, employeeId, refreshEmployees }) {
   const handleSave = async () => {
     setSaving(true);
     setError(null);
+
     try {
-      await axios.put(`${BASE_URL}/admin/employees/${employeeId}`, employeeData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      const formData = new FormData();
+      formData.append("name", employeeData.name);
+      formData.append("email", employeeData.email);
+      formData.append("mobile", employeeData.mobile);
+      formData.append("designation", employeeData.designation);
+      formData.append("gender", employeeData.gender);
+      employeeData.course.forEach((course) => formData.append("course[]", course));
+      formData.append("isActive", isActive);
+      if (employeeData.imagePath) {
+        formData.append("imagePath", employeeData.imagePath);
+      }
+
+      await axios.put(`${BASE_URL}/admin/update-employee/${employeeId}`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data"
+        },
       });
-      refreshEmployees();
       onClose();
+      refreshEmployees(); // Refresh the employee list
       toast.success("Employee Details Edited successfully!", {
         position: "top-center",
         autoClose: 2000,
@@ -107,43 +158,69 @@ function EditEmployeeDialog({ open, onClose, employeeId, refreshEmployees }) {
             <TextField
               fullWidth
               margin="normal"
-              label="Phone"
-              name="phone"
-              value={employeeData.phone}
+              label="Mobile"
+              name="mobile"
+              value={employeeData.mobile}
               onChange={handleChange}
             />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Designation"
-              name="designation"
-              value={employeeData.designation}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Gender"
-              name="gender"
-              value={employeeData.gender}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Course"
-              name="course"
-              value={employeeData.course}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Image URL (optional)"
-              name="imagePath"
-              value={employeeData.imagePath}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel sx={{ margin: "2px" }}>Designation</InputLabel>
+              <Select
+                name="designation"
+                value={employeeData.designation}
+                onChange={handleChange}
+              >
+                <MenuItem value="HR">HR</MenuItem>
+                <MenuItem value="Manager">Manager</MenuItem>
+                <MenuItem value="Sales">Sales</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl component="fieldset" fullWidth margin="normal">
+              <FormLabel component="legend">Course</FormLabel>
+              <FormGroup row>
+                {["MCA", "BCA", "BSC"].map((courseOption) => (
+                  <FormControlLabel
+                    key={courseOption}
+                    control={
+                      <Checkbox
+                        checked={employeeData.course.includes(courseOption)}
+                        onChange={handleCourseChange}
+                        value={courseOption}
+                      />
+                    }
+                    label={courseOption}
+                  />
+                ))}
+              </FormGroup>
+            </FormControl>
+            <FormControl component="fieldset" fullWidth margin="normal">
+              <FormLabel component="legend">Gender</FormLabel>
+              <RadioGroup
+                row
+                name="gender"
+                value={employeeData.gender}
+                onChange={handleChange}
+              >
+                <FormControlLabel value="Male" control={<Radio />} label="Male" />
+                <FormControlLabel value="Female" control={<Radio />} label="Female" />
+              </RadioGroup>
+            </FormControl>
+            <FormControl component="fieldset" fullWidth margin="normal">
+              <FormLabel component="legend">Status</FormLabel>
+              <RadioGroup
+                row
+                name="status"
+                value={isActive ? "Active" : "Inactive"}
+                onChange={handleStatusChange}
+              >
+                <FormControlLabel value="Active" control={<Radio />} label="Active" />
+                <FormControlLabel value="Inactive" control={<Radio />} label="Inactive" />
+              </RadioGroup>
+            </FormControl>
+            <Button variant="contained" component="label" style={{ marginTop: 16 }}>
+              Upload Image
+              <input type="file" hidden onChange={handleImageUpload} />
+            </Button>
           </>
         )}
       </DialogContent>

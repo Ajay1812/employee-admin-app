@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import logo from '../assets/logo.svg'
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -13,11 +13,6 @@ import { CreateEmployee } from './CreateEmployee.jsx';
 import { EmployeeList } from './EmployeeList.jsx';
 
 const NAVIGATION = [
-  {
-    segment: 'Dashboard',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
-  },
   {
     segment: 'employeelist',
     title: 'Employee List',
@@ -76,16 +71,16 @@ DemoPageContent.propTypes = {
 export function Dashboard(props) {
   const { window } = props;
 
-  const router = useDemoRouter('/dashboard');
+  const router = useDemoRouter('/employeelist');
   const demoWindow = window !== undefined ? window() : undefined;
 
   return (
     <AppProvider
-      navigation={NAVIGATION}
       branding={{
-        logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
-        title: 'MUI',
+        logo: <img style={{ color: "blue" }} src={logo} alt="logo" />,
+        title: 'Dealsdray',
       }}
+      navigation={NAVIGATION}
       router={router}
       theme={demoTheme}
       window={demoWindow}

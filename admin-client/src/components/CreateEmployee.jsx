@@ -28,7 +28,6 @@ export const CreateEmployee = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append('name', name);
     formData.append('email', email);
