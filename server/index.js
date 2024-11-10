@@ -9,14 +9,14 @@ require('dotenv').config()
 app.use(cors())
 app.use(express.json())
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+// app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.use('/admin', adminRouter) 
 
-// app.use(express.static("public"));
-// app.use("/*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "/public/index.html"))
-// })
+app.use(express.static("public"));
+app.use("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/index.html"))
+})
 
 
 const mongoUser = process.env.MONGO_USER;
