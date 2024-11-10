@@ -1,12 +1,12 @@
 const express = require('express')
 const mongoose  = require('mongoose')
-const cors = require('cors')
+// const cors = require('cors')
 const adminRouter = require('./routes/admin.js')
 const app = express()
 const path = require('path')
 require('dotenv').config()
 
-app.use(cors())
+// app.use(cors())
 app.use(express.json())
 
 // app.use('/assets', express.static(path.join(__dirname, 'assets')));
