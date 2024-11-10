@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Button, Menu, MenuItem, Avatar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
-import logo from '../assets/logo.svg'
+import logo from '../assets/Logo.svg'
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountCircle from '@mui/icons-material/AccountCircle';
