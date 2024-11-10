@@ -10,6 +10,7 @@ import { BASE_URL } from '../config';
 
 export function SignIn() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
