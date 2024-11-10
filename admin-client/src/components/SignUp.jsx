@@ -61,7 +61,7 @@ export function SignUp() {
           <Grid container spacing={3} justifyContent="center">
             <Grid item xs={12} style={{ textAlign: "center" }}>
               <Typography variant="h4" style={{ marginBottom: "20px", fontWeight: 700 }}>
-                Signup Admin!
+                Admin Signup
               </Typography>
             </Grid>
             <Grid item xs={12}>

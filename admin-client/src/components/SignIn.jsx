@@ -79,7 +79,7 @@ export function SignIn() {
           <Grid container spacing={3} justifyContent="center">
             <Grid item xs={12} style={{ textAlign: "center" }}>
               <Typography variant="h4" style={{ marginBottom: "20px", fontWeight: 700 }}>
-                Login Admin!
+                Admin Login
               </Typography>
             </Grid>
             <Grid item xs={12}>
