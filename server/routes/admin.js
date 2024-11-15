@@ -4,7 +4,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const upload = require("../middlewares/upload.js");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 require("dotenv").config();
 
 router.get("/me", authenticateJwt, async (req, res) => {
